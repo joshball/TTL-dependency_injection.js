@@ -1,0 +1,14 @@
+
+Server:
+  host: '127.0.0.1'
+  port: 9990
+
+Logger:
+  level: warn
+
+MongoDb:
+  server: localhost
+  port: 27017
+  dbName: di_test
+  user:
+  pass:
