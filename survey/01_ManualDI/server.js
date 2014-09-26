@@ -11,7 +11,7 @@ var mongoDbConfig = config.get('MongoDb');
 var loggerConfig = config.get('Logger');
 var serverConfig = config.get('Server');
 
-var Server = function(){
+var Server = function(useMocks){
 
     var self = this;
 
@@ -23,15 +23,17 @@ var Server = function(){
         self.expressApp = express();
 
         var Logger = require('../common/Logger/ConsoleLogger');
-        var logger = new Logger(loggerConfig);
-
         var MongoMonk = require('../common/MongoDb/MongoMonk');
-        var mongoMonk = new MongoMonk(mongoDbConfig);
-
         var UserService = require('../common/Services/UserService');
-        var userService = new UserService({}, mongoMonk, logger);
-
         var UserController = require('../common/Controllers/UserController');
+
+        if(useMocks){
+            UserService = require('../common/Services/MockUserService');
+        }
+
+        var logger = new Logger(loggerConfig);
+        var mongoMonk = new MongoMonk(mongoDbConfig);
+        var userService = new UserService({}, mongoMonk, logger);
         var userController = new UserController({}, userService, logger);
 
         self.expressApp.get('/users', userController.getUsers);
